@@ -11,8 +11,7 @@ typedef struct {
 
 static struct JanetAbstractType HTTPParserState_jt = {
     "pico-http-parser.state",
-    NULL,
-    JANET_ATEND_GC
+    JANET_ATEND_NAME
 };
 
 static Janet cfun_new(int32_t argc, Janet *argv) {
@@ -46,11 +45,10 @@ static Janet cfun_parse(int32_t argc, Janet *argv) {
     size_t method_len, path_len, n_headers;
     int pret, minor_version;
 
-    struct phr_header headers[128];
 
-    n_headers = sizeof(headers) / sizeof(headers[0]);
+    n_headers = pst->n_headers;
     pret = phr_parse_request((const char *)buf->data, (size_t)buf->count, (const char**)&method, &method_len, (const char**)&path, &path_len,
-                             &minor_version, headers, &n_headers, pst->last_len);
+                             &minor_version, pst->headers, &n_headers, pst->last_len);
 
     pst->last_len = buf->count;
 
@@ -61,8 +59,8 @@ static Janet cfun_parse(int32_t argc, Janet *argv) {
         janet_table_put(request, janet_ckeywordv("path"), janet_stringv((const uint8_t *)path, path_len));
         janet_table_put(request, janet_ckeywordv("headers"), janet_wrap_table(header_tab));
         for (size_t i = 0; i < n_headers; i++) {
-            Janet header = janet_stringv((const uint8_t *)headers[i].name, headers[i].name_len);
-            Janet value = janet_stringv((const uint8_t *)headers[i].value, headers[i].value_len);
+            Janet header = janet_stringv((const uint8_t *)pst->headers[i].name, pst->headers[i].name_len);
+            Janet value = janet_stringv((const uint8_t *)pst->headers[i].value, pst->headers[i].value_len);
             janet_table_put(header_tab, header, value);
         }
 
