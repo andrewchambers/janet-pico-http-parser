@@ -19,7 +19,7 @@ static Janet cfun_new(int32_t argc, Janet *argv) {
     
     size_t n_headers = janet_getnumber(argv, 0);
     
-    /* Avoid integer in allocation overflow. */
+    /* Avoid integer overflow in allocation. */
     if (n_headers > 100000) {
         janet_panicf("too many headers");
     }
