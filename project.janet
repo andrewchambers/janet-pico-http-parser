@@ -6,12 +6,7 @@
 
 (declare-native
   :name "_pico-http-parser"
-  :source ["mod.c" "picohttpparser/picohttpparser.c"])
-
-
-(declare-native
-  :name "_pico-http-parser"
-  :source ["mod.c" "picohttpparser/picohttpparser.c"])
+  :source ["_pico-http-parser.c" "picohttpparser/picohttpparser.c"])
 
 (declare-source
   :source ["pico-http-parser.janet"])
